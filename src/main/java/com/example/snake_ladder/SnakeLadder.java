@@ -27,17 +27,36 @@ public class SnakeLadder extends Application {
     private boolean gameStarted = false , playerOneTurn=true, playerTwoTurn=false;
 
     public static void playEffect(int choice){
+        MediaPlayer ladderMp;
+        MediaPlayer failMp;
+
         switch (choice){
             case 0: {
                 Media fail = new Media("file:/home/pratik/IdeaProjects/snake_ladder/src/main/fail.mp3");
-                MediaPlayer failMp = new MediaPlayer(fail);
-                failMp.play();
+                 failMp = new MediaPlayer(fail);
+                 failMp.play();
+                 failMp.setOnEndOfMedia(new Runnable() {
+                     @Override
+                     public void run() {
+                         failMp.stop();
+                         failMp.dispose();
+                     }
+                 });
+
+                 break;
             }
             case 1: {
                 Media ladder = new Media("file:/home/pratik/IdeaProjects/snake_ladder/src/main/ladder.mp3");
-                MediaPlayer ladderMp = new MediaPlayer(ladder);
-
+                ladderMp = new MediaPlayer(ladder);
                 ladderMp.play();
+
+                ladderMp.setOnEndOfMedia(new Runnable() {
+                    @Override
+                    public void run() {
+                        ladderMp.stop();
+                        ladderMp.dispose();
+                    }
+                });
             }
         }
 
@@ -224,9 +243,16 @@ public class SnakeLadder extends Application {
     public void start(Stage stage) throws IOException {
         Media bgm = new Media("file:/home/pratik/IdeaProjects/snake_ladder/src/main/bgm.mp3");
         MediaPlayer mp = new MediaPlayer(bgm);
-        mp.setVolume(3);
+        mp.setVolume(0.3);
         mp.setCycleCount(MediaPlayer.INDEFINITE);
         mp.setAutoPlay(true);
+        mp.setOnEndOfMedia(new Runnable() {
+            @Override
+            public void run() {
+                mp.seek(Duration.ZERO);
+                mp.play();
+            }
+        });
         Scene scene = new Scene(createContent());
         stage.setTitle("Snake and Ladder");
         stage.setScene(scene);
